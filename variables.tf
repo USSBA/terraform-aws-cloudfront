@@ -2,9 +2,21 @@ variable "enabled" {
   type    = bool
   default = true
 }
+variable "ipv6_enabled" {
+  type = bool
+  default = false
+}
 variable "logging_enabled" {
   type    = bool
   default = false
+}
+variable "waf_id" {
+  type = string
+  default = ""
+}
+variable "aliases" {
+  type = list(string)
+  default = []
 }
 variable "logging_config" {
   type = object({
@@ -20,11 +32,17 @@ variable "viewer_certificate" {
     minimum_protocol_version = string
   })
 }
-variable "origins" {
-  type = object({
+variable "custom_origins" {
+  type = list(object({
     domain_name = string
     origin_id   = string
-  })
+    origin_protocol_policy = string
+    origin_ssl_protocols = list(string)
+    origin_keepalive_timeout = number
+    origin_read_timeout = number
+    http_port = number
+    https_port = number
+  }))
 }
 variable "geo_restriction" {
   type = object({

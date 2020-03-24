@@ -2,6 +2,17 @@ resource "aws_cloudfront_distribution" "distribution" {
   # required - wheather or not the distibution is active
   enabled = var.enabled
 
+  # country restrictions
+  restrictions {
+    geo_restriction {
+      restriction_type = var.geo_restriction.type
+      locations        = var.geo_restriction.locations
+    }
+  }
+
+  # price class for the distribution
+  price_class = var.price_class
+
   # only creates a logging configuration when logging_enabled is true
   dynamic "logging_config" {
     iterator = x
@@ -42,7 +53,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     iterator = x
     for_each = length(var.viewer_certificate.iam_certificate_id) > 0 && length(var.viewer_certificate.acm_certificate_arn) > 0 ? [] : [true]
     content {
-      minimum_protocol_version       = var.viewer_certificate_config.minimum_protocol_version
+      minimum_protocol_version       = var.viewer_certificate.minimum_protocol_version
       cloudfront_default_certificate = true
     }
   }

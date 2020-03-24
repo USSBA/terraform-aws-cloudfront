@@ -26,6 +26,16 @@ variable "origins" {
     origin_id   = string
   })
 }
+variable "geo_restriction" {
+  type = object({
+    type      = string
+    locations = list(string)
+  })
+}
+variable "price_class" {
+  type    = string
+  default = "PriceClass_100"
+}
 variable "default_cache_behavior" {
   type = object({
     allowed_methods                = list(string)

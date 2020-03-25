@@ -52,38 +52,68 @@ module "oda" {
     forward_querystring_cache_keys = []
   }
   cache_behaviors = [
+    #{
+    #  path_pattern = "/ela/Information/*"
+    #  allowed_methods = ["GET","HEAD","OPTIONS","PUT","POST","PATCH","DELETE"]
+    #  cached_methods = ["GET","HEAD"]
+    #  origin_id = local.origin_id
+    #  default_ttl = 3600
+    #  min_ttl = 900
+    #  max_ttl = 3600
+    #  viewer_protocol_policy = local.viewer_protocol_policy
+    #  forward_cookies = "whitelist"
+    #  forward_cookies_whitelist = [".AspNet.ApplicationCookie"]
+    #  forward_headers = ["Accept","Accept-Encoding","Accept-Language","Host"]
+    #  forward_querystring = true
+    #  forward_querystring_cache_keys = []
+    #},
+    #{
+    #  path_pattern = "/ela/Documents/*"
+    #  allowed_methods = ["GET","HEAD","OPTIONS","PUT","POST","PATCH","DELETE"]
+    #  cached_methods = ["GET","HEAD"]
+    #  origin_id = local.origin_id
+    #  default_ttl = 3600
+    #  min_ttl = 900
+    #  max_ttl = 3600
+    #  viewer_protocol_policy = local.viewer_protocol_policy
+    #  forward_cookies = "whitelist"
+    #  forward_cookies_whitelist = [".AspNet.ApplicationCookie"]
+    #  forward_headers = ["Accept","Accept-Encoding","Accept-Language","Host"]
+    #  forward_querystring = true
+    #  forward_querystring_cache_keys = []
+    #},
+    #{
+    #  path_pattern = "/ela/Declarations/DeclarationDetails"
+    #  allowed_methods = ["GET","HEAD","OPTIONS","PUT","POST","PATCH","DELETE"]
+    #  cached_methods = ["GET","HEAD"]
+    #  origin_id = local.origin_id
+    #  default_ttl = 3600
+    #  min_ttl = 900
+    #  max_ttl = 3600
+    #  viewer_protocol_policy = local.viewer_protocol_policy
+    #  forward_cookies = "whitelist"
+    #  forward_cookies_whitelist = [".AspNet.ApplicationCookie"]
+    #  forward_headers = ["Accept","Accept-Encoding","Accept-Language","Host"]
+    #  forward_querystring = true
+    #  forward_querystring_cache_keys = []
+    #},
+    #{
+    #  path_pattern = "/ela/Declarations/ViewDisasterDocument/*"
+    #  allowed_methods = ["GET","HEAD","OPTIONS","PUT","POST","PATCH","DELETE"]
+    #  cached_methods = ["GET","HEAD"]
+    #  origin_id = local.origin_id
+    #  default_ttl = 3600
+    #  min_ttl = 900
+    #  max_ttl = 3600
+    #  viewer_protocol_policy = local.viewer_protocol_policy
+    #  forward_cookies = "whitelist"
+    #  forward_cookies_whitelist = [".AspNet.ApplicationCookie"]
+    #  forward_headers = ["Accept","Accept-Encoding","Accept-Language","Host"]
+    #  forward_querystring = true
+    #  forward_querystring_cache_keys = []
+    #},
     {
-      path_pattern = "/ela/Information/*"
-      allowed_methods = ["GET","HEAD","OPTIONS","PUT","POST","PATCH","DELETE"]
-      cached_methods = ["GET","HEAD"]
-      origin_id = local.origin_id
-      default_ttl = 3600
-      min_ttl = 900
-      max_ttl = 3600
-      viewer_protocol_policy = local.viewer_protocol_policy
-      forward_cookies = "whitelist"
-      forward_cookies_whitelist = [".AspNet.ApplicationCookie"]
-      forward_headers = ["Accept","Accept-Encoding","Accept-Language","Host"]
-      forward_querystring = false
-      forward_querystring_cache_keys = []
-    },
-    {
-      path_pattern = "/ela/Documents/*"
-      allowed_methods = ["GET","HEAD","OPTIONS","PUT","POST","PATCH","DELETE"]
-      cached_methods = ["GET","HEAD"]
-      origin_id = local.origin_id
-      default_ttl = 3600
-      min_ttl = 900
-      max_ttl = 3600
-      viewer_protocol_policy = local.viewer_protocol_policy
-      forward_cookies = "whitelist"
-      forward_cookies_whitelist = [".AspNet.ApplicationCookie"]
-      forward_headers = ["Accept","Accept-Encoding","Accept-Language","Host"]
-      forward_querystring = false
-      forward_querystring_cache_keys = []
-    },
-    {
-      path_pattern = "/ela/Declarations/DeclarationDetails"
+      path_pattern = "/ela/Declarations/*"
       allowed_methods = ["GET","HEAD","OPTIONS","PUT","POST","PATCH","DELETE"]
       cached_methods = ["GET","HEAD"]
       origin_id = local.origin_id
@@ -97,51 +127,21 @@ module "oda" {
       forward_querystring = true
       forward_querystring_cache_keys = []
     },
-    {
-      path_pattern = "/ela/Declarations/ViewDisasterDocument/*"
-      allowed_methods = ["GET","HEAD","OPTIONS","PUT","POST","PATCH","DELETE"]
-      cached_methods = ["GET","HEAD"]
-      origin_id = local.origin_id
-      default_ttl = 3600
-      min_ttl = 900
-      max_ttl = 3600
-      viewer_protocol_policy = local.viewer_protocol_policy
-      forward_cookies = "whitelist"
-      forward_cookies_whitelist = [".AspNet.ApplicationCookie"]
-      forward_headers = ["Accept","Accept-Encoding","Accept-Language","Host"]
-      forward_querystring = false
-      forward_querystring_cache_keys = []
-    },
-    {
-      path_pattern = "/ela/Declarations/*"
-      allowed_methods = ["GET","HEAD","OPTIONS","PUT","POST","PATCH","DELETE"]
-      cached_methods = ["GET","HEAD"]
-      origin_id = local.origin_id
-      default_ttl = 3600
-      min_ttl = 900
-      max_ttl = 3600
-      viewer_protocol_policy = local.viewer_protocol_policy
-      forward_cookies = "whitelist"
-      forward_cookies_whitelist = [".AspNet.ApplicationCookie"]
-      forward_headers = ["Accept","Accept-Encoding","Accept-Language","Host"]
-      forward_querystring = false
-      forward_querystring_cache_keys = []
-    },
-    {
-      path_pattern = "/ela/Home/*"
-      allowed_methods = ["GET","HEAD","OPTIONS","PUT","POST","PATCH","DELETE"]
-      cached_methods = ["GET","HEAD"]
-      origin_id = local.origin_id
-      default_ttl = 3600
-      min_ttl = 900
-      max_ttl = 3600
-      viewer_protocol_policy = local.viewer_protocol_policy
-      forward_cookies = "whitelist"
-      forward_cookies_whitelist = [".AspNet.ApplicationCookie"]
-      forward_headers = ["Accept","Accept-Encoding","Accept-Language","Host"]
-      forward_querystring = false
-      forward_querystring_cache_keys = []
-    },
+    #{
+    #  path_pattern = "/ela/Home/*"
+    #  allowed_methods = ["GET","HEAD","OPTIONS","PUT","POST","PATCH","DELETE"]
+    #  cached_methods = ["GET","HEAD"]
+    #  origin_id = local.origin_id
+    #  default_ttl = 3600
+    #  min_ttl = 900
+    #  max_ttl = 3600
+    #  viewer_protocol_policy = local.viewer_protocol_policy
+    #  forward_cookies = "whitelist"
+    #  forward_cookies_whitelist = [".AspNet.ApplicationCookie"]
+    #  forward_headers = ["Accept","Accept-Encoding","Accept-Language","Host"]
+    #  forward_querystring = true
+    #  forward_querystring_cache_keys = []
+    #},
     {
       path_pattern = "/ela/Content/*"
       allowed_methods = ["GET","HEAD","OPTIONS","PUT","POST","PATCH","DELETE"]
@@ -166,8 +166,8 @@ module "oda" {
       min_ttl = 900
       max_ttl = 3600
       viewer_protocol_policy = local.viewer_protocol_policy
-      forward_cookies = "whitelist"
-      forward_cookies_whitelist = [".AspNet.ApplicationCookie"]
+      forward_cookies = "none"
+      forward_cookies_whitelist = []
       forward_headers = ["Accept","Accept-Encoding","Accept-Language","Host"]
       forward_querystring = true
       forward_querystring_cache_keys = []
@@ -184,7 +184,7 @@ module "oda" {
       forward_cookies = "whitelist"
       forward_cookies_whitelist = [".AspNet.ApplicationCookie"]
       forward_headers = ["Accept","Accept-Encoding","Accept-Language","Host"]
-      forward_querystring = false
+      forward_querystring = true
       forward_querystring_cache_keys = []
     },
     {
@@ -199,7 +199,7 @@ module "oda" {
       forward_cookies = "whitelist"
       forward_cookies_whitelist = [".AspNet.ApplicationCookie"]
       forward_headers = ["Accept","Accept-Encoding","Accept-Language","Host"]
-      forward_querystring = false
+      forward_querystring = true
       forward_querystring_cache_keys = []
     },
   ]

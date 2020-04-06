@@ -1,7 +1,19 @@
+locals {
+  use_acm_certificate = var.viewer_certificate.acm_certificate_arn != null && length(var.viewer_certificate.acm_certificate_arn) > 0
+  use_iam_certificate = var.viewer_certificate.iam_certificate_id != null && length(var.viewer_certificate.iam_certificate_id) > 0
+}
 resource "aws_cloudfront_distribution" "distribution" {
+
+  # wheather or not the distribution is enabled
   enabled = var.enabled
+
+  # wheather or not IPV6 is enabled
   is_ipv6_enabled = var.ipv6_enabled
+
+  # attach the WAF when an Id is given
   web_acl_id = length(var.waf_id) == 0 ? null : var.waf_id
+
+  # wire in any aliases given
   aliases = var.aliases
 
   # country restrictions
@@ -29,31 +41,32 @@ resource "aws_cloudfront_distribution" "distribution" {
   # configuration for ACM certificate
   dynamic "viewer_certificate" {
     iterator = x
-    for_each = length(var.viewer_certificate.acm_certificate_arn) > 0 ? [var.viewer_certificate] : []
+    for_each = local.use_acm_certificate ? [var.viewer_certificate] : []
     content {
       acm_certificate_arn            = x.value.acm_certificate_arn
       minimum_protocol_version       = x.value.minimum_protocol_version
-      ssl_support_method             = "sni-only"
-      cloudfront_default_certificate = true
+      ssl_support_method             = x.value.ssl_support_method
+      cloudfront_default_certificate = false
     }
   }
 
   # configuration for IAM certificates
   dynamic "viewer_certificate" {
     iterator = x
-    for_each = length(var.viewer_certificate.iam_certificate_id) > 0 ? [var.viewer_certificate] : []
+    for_each = local.use_iam_certificate ? [var.viewer_certificate] : []
     content {
       iam_certificate_id             = x.value.iam_certificate_id
       minimum_protocol_version       = x.value.minimum_protocol_version
-      ssl_support_method             = "sni-only"
-      cloudfront_default_certificate = true
+      ssl_support_method             = x.value.ssl_support_method
+      cloudfront_default_certificate = false
     }
   }
 
   # use the default cloudfront certificate when ACM and IAM is not configured
   dynamic "viewer_certificate" {
     iterator = x
-    for_each = length(var.viewer_certificate.iam_certificate_id) > 0 || length(var.viewer_certificate.acm_certificate_arn) > 0 ? [] : [true]
+    for_each = ! local.use_iam_certificate && ! local.use_acm_certificate ? [true] : []
+    #for_each = length(var.viewer_certificate.iam_certificate_id) > 0 || length(var.viewer_certificate.acm_certificate_arn) > 0 ? [] : [true]
     content {
       minimum_protocol_version       = var.viewer_certificate.minimum_protocol_version
       cloudfront_default_certificate = true
@@ -67,16 +80,31 @@ resource "aws_cloudfront_distribution" "distribution" {
     content {
       domain_name = x.value.domain_name
       origin_id   = x.value.origin_id
+      dynamic "custom_header" {
+        iterator = y
+        for_each = x.value.custom_headers
+        content {
+          name  = y.value.name
+          value = y.value.value
+        }
+      }
       custom_origin_config {
-        origin_protocol_policy = x.value.origin_protocol_policy
-        origin_ssl_protocols = x.value.origin_ssl_protocols
+        origin_protocol_policy   = x.value.origin_protocol_policy
+        origin_ssl_protocols     = x.value.origin_ssl_protocols
         origin_keepalive_timeout = x.value.origin_keepalive_timeout
-        origin_read_timeout = x.value.origin_read_timeout
-        http_port = x.value.http_port
-        https_port = x.value.https_port
+        origin_read_timeout      = x.value.origin_read_timeout
+        http_port                = x.value.http_port
+        https_port               = x.value.https_port
       }
     }
   }
+
+  #dynamic "origin" {
+  #  iterator = x
+  #  for_each = var.s3_origins
+  #  content {
+  #  }
+  #}
 
   default_cache_behavior {
     allowed_methods        = var.default_cache_behavior.allowed_methods

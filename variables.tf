@@ -3,7 +3,7 @@ variable "enabled" {
   default = true
 }
 variable "ipv6_enabled" {
-  type = bool
+  type    = bool
   default = false
 }
 variable "logging_enabled" {
@@ -11,11 +11,11 @@ variable "logging_enabled" {
   default = false
 }
 variable "waf_id" {
-  type = string
+  type    = string
   default = ""
 }
 variable "aliases" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 variable "logging_config" {
@@ -30,18 +30,20 @@ variable "viewer_certificate" {
     acm_certificate_arn      = string
     iam_certificate_id       = string
     minimum_protocol_version = string
+    ssl_support_method       = string
   })
 }
 variable "custom_origins" {
   type = list(object({
-    domain_name = string
-    origin_id   = string
-    origin_protocol_policy = string
-    origin_ssl_protocols = list(string)
+    domain_name              = string
+    origin_id                = string
+    origin_protocol_policy   = string
+    origin_ssl_protocols     = list(string)
     origin_keepalive_timeout = number
-    origin_read_timeout = number
-    http_port = number
-    https_port = number
+    origin_read_timeout      = number
+    http_port                = number
+    https_port               = number
+    custom_headers           = list(any)
   }))
 }
 variable "geo_restriction" {

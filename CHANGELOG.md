@@ -1,3 +1,15 @@
-# v1.0.0
+# Terraform 0.13
+
+## v2.*
+
+# Terraform 0.12
+
+## v1.1.0
+
+- Adding S3 Origins
+- Adding default_root_object
+- Updating some default variable values
+
+## v1.0.0
 
 - Initial Release

@@ -13,6 +13,8 @@ resource "aws_cloudfront_distribution" "distribution" {
   # attach the WAF when an Id is given
   web_acl_id = length(var.waf_id) == 0 ? null : var.waf_id
 
+  default_root_object = var.default_root_object
+
   # wire in any aliases given
   aliases = var.aliases
 
@@ -99,12 +101,21 @@ resource "aws_cloudfront_distribution" "distribution" {
     }
   }
 
-  #dynamic "origin" {
-  #  iterator = x
-  #  for_each = var.s3_origins
-  #  content {
-  #  }
-  #}
+  dynamic "origin" {
+    iterator = x
+    for_each = var.s3_origins
+    content {
+      domain_name = x.value.domain_name
+      origin_id   = x.value.origin_id
+      dynamic "s3_origin_config" {
+        iterator = y
+        for_each = x.value.origin_access_identity != null ? [x.value.origin_access_identity] : []
+        content {
+          origin_access_identity = y.value
+        }
+      }
+    }
+  }
 
   default_cache_behavior {
     allowed_methods        = var.default_cache_behavior.allowed_methods

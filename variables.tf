@@ -45,12 +45,25 @@ variable "custom_origins" {
     https_port               = number
     custom_headers           = list(any)
   }))
+  default = []
+}
+variable "s3_origins" {
+  type = list(object({
+    domain_name            = string
+    origin_id              = string
+    origin_access_identity = string
+  }))
+  default = []
 }
 variable "geo_restriction" {
   type = object({
     type      = string
     locations = list(string)
   })
+  default = {
+    type      = "none"
+    locations = []
+  }
 }
 variable "price_class" {
   type    = string
@@ -88,4 +101,10 @@ variable "cache_behaviors" {
     forward_querystring            = bool
     forward_querystring_cache_keys = list(string)
   }))
+  default = []
+}
+
+variable "default_root_object" {
+  type    = string
+  default = null
 }

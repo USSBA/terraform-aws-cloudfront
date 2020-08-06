@@ -13,6 +13,8 @@ resource "aws_cloudfront_distribution" "distribution" {
   # attach the WAF when an Id is given
   web_acl_id = length(var.waf_id) == 0 ? null : var.waf_id
 
+  default_root_object = var.default_root_object
+
   # wire in any aliases given
   aliases = var.aliases
 
@@ -99,12 +101,21 @@ resource "aws_cloudfront_distribution" "distribution" {
     }
   }
 
-  #dynamic "origin" {
-  #  iterator = x
-  #  for_each = var.s3_origins
-  #  content {
-  #  }
-  #}
+  dynamic "origin" {
+    iterator = x
+    for_each = var.s3_origins
+    content {
+      domain_name = x.value.domain_name
+      origin_id   = x.value.origin_id
+      dynamic "s3_origin_config" {
+        iterator = y
+        for_each = x.value.origin_access_identity != null ? [x.value.origin_access_identity] : []
+        content {
+          origin_access_identity = y.value
+        }
+      }
+    }
+  }
 
   default_cache_behavior {
     allowed_methods        = var.default_cache_behavior.allowed_methods
@@ -123,6 +134,15 @@ resource "aws_cloudfront_distribution" "distribution" {
       headers                 = var.default_cache_behavior.forward_headers
       query_string            = var.default_cache_behavior.forward_querystring
       query_string_cache_keys = length(var.default_cache_behavior.forward_querystring_cache_keys) == 0 ? null : var.default_cache_behavior.forward_querystring_cache_keys
+    }
+    dynamic "lambda_function_association" {
+      iterator = x
+      for_each = var.default_cache_behavior.lambda_function_association
+      content {
+        event_type   = x.value.event_type
+        lambda_arn   = x.value.lambda_arn
+        include_body = x.value.include_body
+      }
     }
   }
 
@@ -148,6 +168,15 @@ resource "aws_cloudfront_distribution" "distribution" {
         headers                 = x.value.forward_headers
         query_string            = x.value.forward_querystring
         query_string_cache_keys = length(x.value.forward_querystring_cache_keys) == 0 ? null : x.value.forward_querystring_cache_keys
+      }
+      dynamic "lambda_function_association" {
+        iterator = y
+        for_each = x.value.lambda_function_association
+        content {
+          event_type   = y.value.event_type
+          lambda_arn   = y.value.lambda_arn
+          include_body = y.value.include_body
+        }
       }
     }
   }

@@ -9,13 +9,18 @@ and make configuration a bit more readable.
 ```
 module "my_cloudfront" {
   source = "USSBA/terraform-aws-cloudfront"
-  version = "~> 1.0.0"
+  ## For Terraform 0.12
+  version = "~> 1.0"
+  ## For Terraform 0.13
+  #version = "~> 2.0"
 
   enabled = true
   ipv6_enabled = true
   price_class = "PriceClass_100"
   aliases = ["my_domain.example.com"]
   waf_id = "8b633f9-8b63-8b63-8b63-8b633f9f837"
+
+  default_root_object = "index.html"
 
   logging_enabled = true
   logging_config  = {
@@ -52,9 +57,16 @@ module "my_cloudfront" {
     }
   ]
 
-  # s3_origins = [
-  #   TBD
-  # ]
+  # S3-backed origins
+  s3_origins = [
+    {
+      origin_id = "example_bucket_origin"
+      domain_name            = aws_s3_bucket.example.bucket_regional_domain_name
+
+      # Optional OAI
+      origin_access_identity = aws_cloudfront_origin_access_identity.oai.cloudfront_access_identity_path
+    },
+  ]
 
   # Optional: Geo Restriction
   geo_restriction = {

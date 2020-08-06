@@ -135,6 +135,15 @@ resource "aws_cloudfront_distribution" "distribution" {
       query_string            = var.default_cache_behavior.forward_querystring
       query_string_cache_keys = length(var.default_cache_behavior.forward_querystring_cache_keys) == 0 ? null : var.default_cache_behavior.forward_querystring_cache_keys
     }
+    dynamic "lambda_function_association" {
+      iterator = x
+      for_each = var.default_cache_behavior.lambda_function_association
+      content {
+        event_type   = x.value.event_type
+        lambda_arn   = x.value.lambda_arn
+        include_body = x.value.include_body
+      }
+    }
   }
 
 
@@ -159,6 +168,15 @@ resource "aws_cloudfront_distribution" "distribution" {
         headers                 = x.value.forward_headers
         query_string            = x.value.forward_querystring
         query_string_cache_keys = length(x.value.forward_querystring_cache_keys) == 0 ? null : x.value.forward_querystring_cache_keys
+      }
+      dynamic "lambda_function_association" {
+        iterator = y
+        for_each = x.value.lambda_function_association
+        content {
+          event_type   = y.value.event_type
+          lambda_arn   = y.value.lambda_arn
+          include_body = y.value.include_body
+        }
       }
     }
   }

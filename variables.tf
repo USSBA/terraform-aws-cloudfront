@@ -83,6 +83,7 @@ variable "default_cache_behavior" {
     forward_headers                = list(string)
     forward_querystring            = bool
     forward_querystring_cache_keys = list(string)
+    lambda_function_association    = list(any)
   })
 }
 variable "cache_behaviors" {
@@ -100,6 +101,7 @@ variable "cache_behaviors" {
     forward_headers                = list(string)
     forward_querystring            = bool
     forward_querystring_cache_keys = list(string)
+    lambda_function_association    = list(any)
   }))
   default = []
 }

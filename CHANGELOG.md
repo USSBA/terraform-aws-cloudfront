@@ -4,6 +4,7 @@
 
 - Adding S3 Origins
 - Adding default_root_object
+- Adding lambda at edge associations
 - Updating some default variable values
 
 ## v2.0.0
@@ -16,6 +17,7 @@
 
 - Adding S3 Origins
 - Adding default_root_object
+- Adding lambda at edge associations
 - Updating some default variable values
 
 ## v1.0.0

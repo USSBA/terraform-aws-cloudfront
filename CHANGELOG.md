@@ -1,5 +1,9 @@
 # Terraform 0.13
 
+## v2.1.1
+
+- Bump aws provider to support 3.*
+
 ## v2.1.0
 
 - Adding S3 Origins

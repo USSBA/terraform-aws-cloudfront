@@ -15,6 +15,10 @@ resource "aws_cloudfront_distribution" "distribution" {
 
   default_root_object = var.default_root_object
 
+  comment      = var.comment
+  http_version = var.http_version
+  tags         = var.tags
+
   # wire in any aliases given
   aliases = var.aliases
 
@@ -159,6 +163,7 @@ resource "aws_cloudfront_distribution" "distribution" {
       min_ttl                = x.value.min_ttl
       max_ttl                = x.value.max_ttl
       viewer_protocol_policy = x.value.viewer_protocol_policy
+      compress               = x.value.compress
 
       forwarded_values {
         cookies {

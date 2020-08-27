@@ -102,6 +102,7 @@ variable "cache_behaviors" {
     forward_querystring            = bool
     forward_querystring_cache_keys = list(string)
     lambda_function_association    = list(any)
+    compress                       = bool
   }))
   default = []
 }
@@ -109,4 +110,18 @@ variable "cache_behaviors" {
 variable "default_root_object" {
   type    = string
   default = null
+}
+variable "comment" {
+  type        = string
+  default     = null
+  description = "Comment field for the distribution"
+}
+variable "http_version" {
+  type        = string
+  default     = null #terraform will default this to http2
+  description = "http_version field for the distribution; options are http1.1, http2"
+}
+variable "tags" {
+  default     = null
+  description = "List of key-value pairs to assign to tags of the distribution"
 }

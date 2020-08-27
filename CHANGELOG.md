@@ -1,5 +1,10 @@
 # Terraform 0.13
 
+## v3.0.0
+
+- **BREAKING CHANGE**: Adding configurable property: cached_behaviors[].compress
+- Adding configurable fields: comment, http_version, tags
+
 ## v2.1.1
 
 - Bump aws provider to support 3.*

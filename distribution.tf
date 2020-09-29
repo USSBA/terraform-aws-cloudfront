@@ -50,8 +50,8 @@ resource "aws_cloudfront_distribution" "distribution" {
     for_each = local.use_acm_certificate ? [var.viewer_certificate] : []
     content {
       acm_certificate_arn            = x.value.acm_certificate_arn
-      minimum_protocol_version       = x.value.minimum_protocol_version
-      ssl_support_method             = x.value.ssl_support_method
+      minimum_protocol_version       = try(x.value.minimum_protocol_version, "TLSv1.2_2018")
+      ssl_support_method             = try(x.value.ssl_support_method, "sni-only")
       cloudfront_default_certificate = false
     }
   }
@@ -62,8 +62,8 @@ resource "aws_cloudfront_distribution" "distribution" {
     for_each = local.use_iam_certificate ? [var.viewer_certificate] : []
     content {
       iam_certificate_id             = x.value.iam_certificate_id
-      minimum_protocol_version       = x.value.minimum_protocol_version
-      ssl_support_method             = x.value.ssl_support_method
+      minimum_protocol_version       = try(x.value.minimum_protocol_version, "TLSv1.2_2018")
+      ssl_support_method             = try(x.value.ssl_support_method, "sni-only")
       cloudfront_default_certificate = false
     }
   }
@@ -74,7 +74,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     for_each = ! local.use_iam_certificate && ! local.use_acm_certificate ? [true] : []
     #for_each = length(var.viewer_certificate.iam_certificate_id) > 0 || length(var.viewer_certificate.acm_certificate_arn) > 0 ? [] : [true]
     content {
-      minimum_protocol_version       = var.viewer_certificate.minimum_protocol_version
+      minimum_protocol_version       = "TLSv1" # Only TLSv1 is compatible with default certificate
       cloudfront_default_certificate = true
     }
   }
@@ -86,6 +86,7 @@ resource "aws_cloudfront_distribution" "distribution" {
     content {
       domain_name = x.value.domain_name
       origin_id   = x.value.origin_id
+      origin_path = try(x.value.origin_path, null)
       dynamic "custom_header" {
         iterator = y
         for_each = x.value.custom_headers
@@ -95,12 +96,12 @@ resource "aws_cloudfront_distribution" "distribution" {
         }
       }
       custom_origin_config {
-        origin_protocol_policy   = x.value.origin_protocol_policy
-        origin_ssl_protocols     = x.value.origin_ssl_protocols
-        origin_keepalive_timeout = x.value.origin_keepalive_timeout
-        origin_read_timeout      = x.value.origin_read_timeout
-        http_port                = x.value.http_port
-        https_port               = x.value.https_port
+        origin_protocol_policy   = try(x.value.origin_protocol_policy, "match-viewer")
+        origin_ssl_protocols     = try(x.value.origin_ssl_protocols, ["TLSv1.1", "TLSv1.2"])
+        origin_keepalive_timeout = try(x.value.origin_keepalive_timeout, 60)
+        origin_read_timeout      = try(x.value.origin_read_timeout, 60)
+        http_port                = try(x.value.http_port, 80)
+        https_port               = try(x.value.https_port, 443)
       }
     }
   }
@@ -122,13 +123,13 @@ resource "aws_cloudfront_distribution" "distribution" {
   }
 
   default_cache_behavior {
-    allowed_methods        = var.default_cache_behavior.allowed_methods
-    cached_methods         = var.default_cache_behavior.cached_methods
+    allowed_methods        = try(var.default_cache_behavior.allowed_methods, ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"])
+    cached_methods         = try(var.default_cache_behavior.cached_methods, ["GET", "HEAD"])
     target_origin_id       = var.default_cache_behavior.origin_id
-    default_ttl            = var.default_cache_behavior.default_ttl
-    min_ttl                = var.default_cache_behavior.min_ttl
-    max_ttl                = var.default_cache_behavior.max_ttl
-    viewer_protocol_policy = var.default_cache_behavior.viewer_protocol_policy
+    default_ttl            = try(var.default_cache_behavior.default_ttl, 86400)
+    min_ttl                = try(var.default_cache_behavior.min_ttl, 0)
+    max_ttl                = try(var.default_cache_behavior.max_ttl, 31536000)
+    viewer_protocol_policy = try(var.default_cache_behavior.viewer_protocol_policy, "redirect-to-https")
 
     forwarded_values {
       cookies {
@@ -156,23 +157,23 @@ resource "aws_cloudfront_distribution" "distribution" {
     for_each = var.cache_behaviors
     content {
       path_pattern           = x.value.path_pattern
-      allowed_methods        = x.value.allowed_methods
-      cached_methods         = x.value.cached_methods
       target_origin_id       = x.value.origin_id
-      default_ttl            = x.value.default_ttl
-      min_ttl                = x.value.min_ttl
-      max_ttl                = x.value.max_ttl
-      viewer_protocol_policy = x.value.viewer_protocol_policy
-      compress               = x.value.compress
+      allowed_methods        = try(x.value.allowed_methods, ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"])
+      cached_methods         = try(x.value.cached_methods, ["GET", "HEAD"])
+      min_ttl                = try(x.value.min_ttl, 0)
+      default_ttl            = try(x.value.default_ttl, 86400)
+      max_ttl                = try(x.value.max_ttl, 31536000)
+      viewer_protocol_policy = try(x.value.viewer_protocol_policy, "redirect-to-https")
+      compress               = try(x.value.compress, "false")
 
       forwarded_values {
         cookies {
-          forward           = x.value.forward_cookies
-          whitelisted_names = length(x.value.forward_cookies_whitelist) == 0 ? null : x.value.forward_cookies_whitelist
+          forward           = try(x.value.forward_cookies, "none")
+          whitelisted_names = try(x.value.forward_cookies_whitelist, null)
         }
-        headers                 = x.value.forward_headers
-        query_string            = x.value.forward_querystring
-        query_string_cache_keys = length(x.value.forward_querystring_cache_keys) == 0 ? null : x.value.forward_querystring_cache_keys
+        headers                 = try(x.value.forward_headers, null)
+        query_string            = try(x.value.forward_querystring, true)
+        query_string_cache_keys = try(x.value.forward_querystring_cache_keys, null)
       }
       dynamic "lambda_function_association" {
         iterator = y

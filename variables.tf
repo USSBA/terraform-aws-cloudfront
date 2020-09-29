@@ -26,26 +26,13 @@ variable "logging_config" {
   })
 }
 variable "viewer_certificate" {
-  type = object({
-    acm_certificate_arn      = string
-    iam_certificate_id       = string
-    minimum_protocol_version = string
-    ssl_support_method       = string
-  })
+  type = any
+  description = "Viewer certificate map with fields: acm_certificate_arn, iam_certificate_id, minimum_protocol_version, ssl_support_method"
 }
 variable "custom_origins" {
-  type = list(object({
-    domain_name              = string
-    origin_id                = string
-    origin_protocol_policy   = string
-    origin_ssl_protocols     = list(string)
-    origin_keepalive_timeout = number
-    origin_read_timeout      = number
-    http_port                = number
-    https_port               = number
-    custom_headers           = list(any)
-  }))
+  type = any
   default = []
+  description = "List of custom origin maps"
 }
 variable "s3_origins" {
   type = list(object({
@@ -70,41 +57,13 @@ variable "price_class" {
   default = "PriceClass_100"
 }
 variable "default_cache_behavior" {
-  type = object({
-    allowed_methods                = list(string)
-    cached_methods                 = list(string)
-    origin_id                      = string
-    default_ttl                    = number
-    min_ttl                        = number
-    max_ttl                        = number
-    viewer_protocol_policy         = string
-    forward_cookies                = string
-    forward_cookies_whitelist      = list(string)
-    forward_headers                = list(string)
-    forward_querystring            = bool
-    forward_querystring_cache_keys = list(string)
-    lambda_function_association    = list(any)
-  })
+  type = any
+  description = "The default cache behavior"
 }
 variable "cache_behaviors" {
-  type = list(object({
-    path_pattern                   = string
-    allowed_methods                = list(string)
-    cached_methods                 = list(string)
-    origin_id                      = string
-    default_ttl                    = number
-    min_ttl                        = number
-    max_ttl                        = number
-    viewer_protocol_policy         = string
-    forward_cookies                = string
-    forward_cookies_whitelist      = list(string)
-    forward_headers                = list(string)
-    forward_querystring            = bool
-    forward_querystring_cache_keys = list(string)
-    lambda_function_association    = list(any)
-    compress                       = bool
-  }))
+  type = any
   default = []
+  description = "List of cache behavior maps"
 }
 
 variable "default_root_object" {

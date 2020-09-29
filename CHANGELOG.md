@@ -1,5 +1,11 @@
 # Terraform 0.13
 
+## v3.1.0
+
+- Removing the strict typing on variables to allow for sane defaults.
+  This should not impact any existing users, but would make for much simpler
+  distribution config.
+
 ## v3.0.0
 
 - **BREAKING CHANGE**: Adding configurable property: cached_behaviors[].compress

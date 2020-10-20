@@ -4,7 +4,101 @@ In creating numerous CloudFront distributions across our projects, we found the 
 resource to be a bit boilerplate heavy.  This led us to making a wrapper for it that attempts to simplify the resource
 and make configuration a bit more readable.
 
+## Features
+
+* Many default have been added, for instance `geo_restrictions` and `price_class`.
+
+## Usage
+
+### Required
+
+`default_cache_behavior` - The default cache behavior for the distribution.
+
+`custom_origins` - (Optional Required) A list of custom origin maps. By default there are no custom origins, but at least 1 custom or s3 origin is required.
+
+`s3_origins` - (Optional Required) A list of s3 origin maps. By default there are no s3 origins, but at least one s3 or custom origin is required.
+
+### Optional
+
+`aliases` - A list of valid domain names when using an SSL certificate.
+
+`cache_behaviors` - A ordered list of cache behavoirs, if none match the default will be used.
+
+`comment` - A short statement about this distribution.
+
+`default_root_object` - The default used by the distribution.
+
+`enabled` - Indicates whether or not the distribution itself is enabled or disabled. Default is `true`.
+
+`http_version` - The HTTP version of the distribution. By default http2 will be used.
+
+`ipv6_enabled` - Indicates whether or not the distribution will use both IPv4 and IPv6 protocols. Default is `false`.
+
+`logging_enabled` - Indicates whether or not the distribution will employ log configuraiton settings. Default is `false`.
+
+`geo_restriction` - A whitelist or blacklist of countries. By default there will be no restrictions.
+
+`price_class` - The distribution price class. Default is `PriceClass_100`.
+
+`tags` - A list of name and values that the distribution will be tagged with.
+
+`waf_id` - If using WAFv1 then must be a global WAF id, otherwise any WAFv2 id.
+
+`viewer_certificate` - See detail below; By default will use the CloudFront default certificate and TLSv1.
+
+```
+viewer_certificate = {
+
+  # The acm_certificate_arn will always supercede iam_certificate_id; use an empty string
+  # (ex. acm_certificate_arn = "") if using an IAM certificate.
+  acm_certificate_arn = data.aws_acm_certificate.example.arn
+  iam_certificate_id = ""
+
+  # By default TLSv1 is used as it is the only acceptable value when the default CloudFront
+  # certificate is enabled. Must use an ACM or IAM certifiate for this setting to take effect.
+  minimum_protocol_version = # one of: "SSLv3" "TLSv1" "TLSv1_2016" "TLSv1.1_2016" "TLSv1.2_2018" "TLSv1.2_2019"
+
+  # it is suggested to use sni-only unless you have a very distinct case
+  ssl_support_method = #one of: "vip" or "sni-only"
+}
+```
+
 ## Example Usage
+
+### Minimal Example Configuration
+
+The following example will use the default CloudFront viewer certificate pointing at a secure bucket using an OAI.
+The canoniacal ID of the OAI must be be granted to the bucket.
+
+```
+module "myapp" {
+  # source/version information
+
+  s3_origins = [
+    {
+      origin_id              = "example_bucket_origin"
+      domain_name            = aws_s3_bucket.example.bucket_regional_domain_name
+      origin_access_identity = aws_cloudfront_origin_access_identity.oai.cloudfront_access_identity_path
+    },
+  ]
+  default_cache_behavior = {
+    allowed_methods                = ["GET","HEAD","OPTIONS","PUT","POST","PATCH","DELETE"]
+    cached_methods                 = ["GET","HEAD"]
+    origin_id                      = "example_bucket_origin"
+    default_ttl                    = 0
+    min_ttl                        = 0
+    max_ttl                        = 0
+    viewer_protocol_policy         = "redirect-to-https" # allow-all, https-only, redirect-to-https
+    forward_cookies                = "all"
+    forward_cookies_whitelist      = []
+    forward_headers                = ["*"]
+    forward_querystring            = true
+    forward_querystring_cache_keys = []
+  }
+}
+```
+
+### Complex Example Configuration
 
 ```
 module "my_cloudfront" {
@@ -135,8 +229,3 @@ module "my_cloudfront" {
 }
 
 ```
-
-
-## Variables
-
-

@@ -26,12 +26,12 @@ variable "logging_config" {
   })
 }
 variable "viewer_certificate" {
-  type = any
+  type        = any
   description = "Viewer certificate map with fields: acm_certificate_arn, iam_certificate_id, minimum_protocol_version, ssl_support_method"
 }
 variable "custom_origins" {
-  type = any
-  default = []
+  type        = any
+  default     = []
   description = "List of custom origin maps"
 }
 variable "s3_origins" {
@@ -57,12 +57,12 @@ variable "price_class" {
   default = "PriceClass_100"
 }
 variable "default_cache_behavior" {
-  type = any
+  type        = any
   description = "The default cache behavior"
 }
 variable "cache_behaviors" {
-  type = any
-  default = []
+  type        = any
+  default     = []
   description = "List of cache behavior maps"
 }
 

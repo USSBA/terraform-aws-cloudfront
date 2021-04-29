@@ -71,7 +71,7 @@ resource "aws_cloudfront_distribution" "distribution" {
   # use the default cloudfront certificate when ACM and IAM is not configured
   dynamic "viewer_certificate" {
     iterator = x
-    for_each = ! local.use_iam_certificate && ! local.use_acm_certificate ? [true] : []
+    for_each = !local.use_iam_certificate && !local.use_acm_certificate ? [true] : []
     #for_each = length(var.viewer_certificate.iam_certificate_id) > 0 || length(var.viewer_certificate.acm_certificate_arn) > 0 ? [] : [true]
     content {
       minimum_protocol_version       = "TLSv1" # Only TLSv1 is compatible with default certificate
@@ -116,7 +116,7 @@ resource "aws_cloudfront_distribution" "distribution" {
         iterator = y
         for_each = x.value.origin_access_identity != null ? [x.value.origin_access_identity] : []
         content {
-          origin_access_identity = y.value
+          origin_access_identity = nonsensitive(y.value)
         }
       }
     }

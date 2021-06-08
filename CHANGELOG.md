@@ -2,6 +2,10 @@
 
 ## Terraform 0.15
 
+### v4.0.1
+
+- The required version constraint allows >= 0.13
+
 ### v4.0.0
 
 - The OAI id will no longer be reguarded as a sensitive value

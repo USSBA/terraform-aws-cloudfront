@@ -1,5 +1,10 @@
 # Terraform 0.13
 
+## v3.1.1
+
+- Support tf v1.0+
+
+
 ## v3.1.0
 
 - Removing the strict typing on variables to allow for sane defaults.

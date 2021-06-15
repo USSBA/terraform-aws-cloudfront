@@ -116,7 +116,7 @@ resource "aws_cloudfront_distribution" "distribution" {
         iterator = y
         for_each = x.value.origin_access_identity != null ? [x.value.origin_access_identity] : []
         content {
-          origin_access_identity = nonsensitive(y.value)
+          origin_access_identity = y.value
         }
       }
     }

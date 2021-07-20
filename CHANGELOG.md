@@ -2,6 +2,10 @@
 
 ## Terraform 0.15
 
+### v4.1.0
+
+- Adding CloudFront function capability.
+
 ### v4.0.2
 
 - **REVERT v4.0.0**: The sensitivity of a variable should be resolved before module instantiation

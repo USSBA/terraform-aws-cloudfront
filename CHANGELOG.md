@@ -2,6 +2,10 @@
 
 ## Terraform 0.15
 
+### v4.1.1
+
+- Fixing cloudfront function parameters from `lambda_arn` to `function_arn`
+
 ### v4.1.0
 
 - Adding CloudFront function capability.

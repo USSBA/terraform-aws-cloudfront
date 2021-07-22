@@ -154,7 +154,7 @@ resource "aws_cloudfront_distribution" "distribution" {
       for_each = try(var.default_cache_behavior.function_association, [])
       content {
         event_type   = x.value.event_type
-        function_arn = x.value.lambda_arn
+        function_arn = x.value.function_arn
       }
     }
   }
@@ -197,7 +197,7 @@ resource "aws_cloudfront_distribution" "distribution" {
         for_each = try(x.value.function_association, [])
         content {
           event_type   = y.value.event_type
-          function_arn = y.value.lambda_arn
+          function_arn = y.value.function_arn
         }
       }
     }

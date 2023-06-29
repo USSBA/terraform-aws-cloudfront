@@ -1,3 +1,7 @@
+# DISCLAIMER
+
+**THE USSBA WILL BE DEPRECATING THIS MODULE IN THE NEXT 6 MONTHS AND WILL NO LONGER BE MAKING UPDATES TO THIS MODULE.**
+
 # Terraform CloudFront Module
 
 In creating numerous CloudFront distributions across our projects, we found the native aws_cloudfront_distribution
